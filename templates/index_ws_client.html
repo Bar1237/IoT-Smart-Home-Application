@@ -1,52 +1,57 @@
-<!-- chapter03/templates/index_ws_client.html -->
+<!-- Template that is used as a base to this code is taken from:
+https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/master/chapter03 -->
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Flask Web Socket Example</title>
+    <title>Smart Home System Demo</title>
     <script src="/static/jquery.min.js"></script>
-    <script src="/static/socket.io.js"></script>                            <!-- (1) -->
+    <script src="/static/socket.io.js"></script>                            
     <script type="text/javascript">
 
-        var socket = io();  // For API documentation see https://socket.io    // (2)
+        var socket = io();
 
-        socket.on('connect', function() {                                     // (3)
+        socket.on('connect', function() {                                     
             console.log("Connected to Server");
             $("#connected").html("Yes");
         });
 
-        socket.on('disconnect', function() {                                  // (4)
+        socket.on('disconnect', function() {                                 
             console.log("Disconnected from the Server");
             $("#connected").html("No");
         });
-
-        socket.on('led1', function(dataFromServer) {                           // (5)
+        
+        //Takes value from server for led1.
+        socket.on('led1', function(dataFromServer) {                         
             console.log(dataFromServer)
             if (dataFromServer.level !== undefined) {
-                $("input[type=range].brightnessLevel11").val(dataFromServer.level);
-                $("#brightnessLevel1").html(dataFromServer.level);
+                $("input[type=checkbox].checkboxOne").val(dataFromServer.level);
+                $("#checkboxOne").html(dataFromServer.level);
             }
         });
 
-        socket.on('led2', function(dataFromServer) {                           // (5)
+        //Takes value from server for led2.
+        socket.on('led2', function(dataFromServer) {                         
             console.log(dataFromServer)
             if (dataFromServer.level !== undefined) {
-                $("input[type=range].brightnessLevel22").val(dataFromServer.level);
-                $("#brightnessLevel2").html(dataFromServer.level);
+                $("input[type=checkbox].checkboxTwo").val(dataFromServer.level);
+                $("#checkboxTwo").html(dataFromServer.level);
             }
         });
 
-        $(document).ready(function() {                                        // (6)
-            // Event listener for Slider value changes.
-            $("input[type=range].brightnessLevel11").on('input', function(){
+        //Sends value to the server for led1.
+        $(document).ready(function() {                                       
+            // Event listener for value changes.
+            $("input[type=checkbox].checkboxOne").on('click', function(){
                 level = $(this).val();
                 payload = {"level": level};
                 socket.emit('led1', payload);
             });
         });
 
-        $(document).ready(function() {                                        // (6)
-            // Event listener for Slider value changes.
-            $("input[type=range].brightnessLevel22").on('input', function(){
+        //Sends value to the server for led2.
+        $(document).ready(function() {                                       
+            // Event listener for value changes.
+            $("input[type=checkbox].checkboxTwo").on('click', function(){
                 level = $(this).val();
                 payload = {"level": level};
                 socket.emit('led2', payload);
@@ -55,14 +60,11 @@
     </script>
 </head>
 <body>
-    <h1>Flask Web Socket Example</h1>
+    <h1>Smart Home System Demo</h1>
     LED is connected to GPIO {{pin}}<br>
-    Connected to server: <span id="connected">No</span>                     <!-- (7) -->
+    Connected to server: <span id="connected">No</span>                    
     <br><br>
-    Brightness 1 <span id="brightnessLevel1"></span>:<br>
-    <input type="range" min="0" max="100" value="0" class="brightnessLevel11">
-    <br><br>
-    Brightness 2 <span id="brightnessLevel2"></span>:<br>
-    <input type="range" min="0" max="100" value="0" class="brightnessLevel22">
+    <input type="checkbox" value="" class="checkboxOne">
+    <input type="checkbox" value="" class="checkboxTwo">
 </body>
 </html>
