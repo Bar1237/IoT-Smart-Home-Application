@@ -29,10 +29,10 @@ LED_GPIO_PIN = 21
 led1 = None
 led2 = None
 state1 = {
-    'level': 50 # LED Brightness.
+    'level': 50 
 }
 state2 = {
-    'level': 50 # LED Brightness.
+    'level': 50 
 }
 
 
