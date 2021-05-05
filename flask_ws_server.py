@@ -1,13 +1,10 @@
 """
-File: chapter03/flask_ws_server.py
-A Flask based Web Sockets server to control an LED built using Flask-SocketIO.
-Dependencies:
-  pip3 install gpiozero pigpio flask-socketio
-Built and tested with Python 3.7 on Raspberry Pi 4 Model B
+Template that is used as a base to this code is taken from:
+https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/master/chapter03
 """
 import logging
 from flask import Flask, request, render_template
-from flask_socketio import SocketIO, send, emit                                      # (1)
+from flask_socketio import SocketIO, send, emit                                     
 # from gpiozero import PWMLED, Device
 # from gpiozero.pins.pigpio import PiGPIOFactory
 
@@ -24,19 +21,20 @@ logger.setLevel(logging.INFO) # Debugging for this file.
 
 # Flask & Flask Restful Global Variables.
 app = Flask(__name__) # Core Flask app.
-socketio = SocketIO(app) # Flask-SocketIO extension wrapper.                         # (2)
+socketio = SocketIO(app) # Flask-SocketIO extension wrapper.                         
 
 
 # Global variables
 LED_GPIO_PIN = 21
-led1 = None # PWMLED Instance. See init_led()
+led1 = None
 led2 = None
 state1 = {
-    'level': 50 # 0..100 % brightless of LED.
+    'level': 50 # LED Brightness.
 }
 state2 = {
-    'level': 50 # 0..100 % brightless of LED.
+    'level': 50 # LED Brightness.
 }
+
 
 """
 GPIO Related Functions
@@ -59,83 +57,78 @@ def init_led2():
 """
 Flask & Flask-SocketIO Related Functions
 """
-
 # @app.route apply to the raw Flask instance.
 # Here we are serving a simple web page.
 @app.route('/', methods=['GET'])
 def index():
-    """Make sure index_ws_client.html is in the templates folder
+    """index_ws_client.html file needs to be in the templates folder
     relative to this Python file."""
-    return render_template('index_ws_client.html', pin=LED_GPIO_PIN)                 # (3)
-
+    return render_template('index_ws_client.html', pin=LED_GPIO_PIN)                 
 
 # Flask-SocketIO Callback Handlers
-@socketio.on('connect')                                                              # (4)
+@socketio.on('connect')                                                              
 def handle_connect():
     """Called when a remote web socket client connects to this server"""
-    logger.info("Client {} connected.".format(request.sid))                          # (5)
+    logger.info("Client {} connected.".format(request.sid))                          
 
     # Send initialising data to newly connected client.
-    emit("led1", state1)                                                             # (6)
+    emit("led1", state1)                                                             
     emit("led2", state2)
 
-
-@socketio.on('disconnect')                                                           # (7)
+@socketio.on('disconnect')                                                           
 def handle_disconnect():
     """Called with a client disconnects from this server"""
     logger.info("Client {} disconnected.".format(request.sid))
 
-
-@socketio.on('led1')                                                                  # (8)
-def handle_state(data):                                                              # (9)
+@socketio.on('led1')                                                                  
+def handle_state(data):                                                              
     """Handle 'led' messages to control the LED."""
     global state
     logger.info("Update LED1 from client {}: {} ".format(request.sid, data))
 
-    if 'level' in data and data['level'].isdigit():                                  # (10)
+    if 'level' in data and data['level'].isdigit():                                  
         new_level = int(data['level']) # data comes in as str.
 
         # Range validation and bounding.
-        if new_level < 0:                                                            # (11)
+        if new_level < 0:                                                            
             new_level = 0
         elif new_level > 100:
             new_level = 100
 
         # Set PWM duty cycle to adjust brightness level.
         # We are mapping input value 0-100 to 0-1
-        # led.value = new_level / 100                                                  # (12)
+        # led.value = new_level / 100                                                  
         logger.info("LED1 brightness level is " + str(new_level))
 
         state1['level'] = new_level
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
-    emit("led1", state1, broadcast=True)                                               # (13)
+    emit("led1", state1, broadcast=True)                                               
 
-
-@socketio.on('led2')                                                                  # (8)
-def handle_state(data):                                                              # (9)
+@socketio.on('led2')                                                                  
+def handle_state(data):                                                              
     """Handle 'led' messages to control the LED."""
     global state
     logger.info("Update LED2 from client {}: {} ".format(request.sid, data))
 
-    if 'level' in data and data['level'].isdigit():                                  # (10)
+    if 'level' in data and data['level'].isdigit():                                  
         new_level = int(data['level']) # data comes in as str.
 
         # Range validation and bounding.
-        if new_level < 0:                                                            # (11)
+        if new_level < 0:                                                           
             new_level = 0
         elif new_level > 100:
             new_level = 100
 
         # Set PWM duty cycle to adjust brightness level.
         # We are mapping input value 0-100 to 0-1
-        # led.value = new_level / 100                                                  # (12)
+        # led.value = new_level / 100                                                  
         logger.info("LED2 brightness level is " + str(new_level))
 
         state2['level'] = new_level
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
-    emit("led2", state2, broadcast=True)                                               # (13)
+    emit("led2", state2, broadcast=True)                                               
 
 
 # Initialise Module
