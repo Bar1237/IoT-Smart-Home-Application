@@ -5,8 +5,8 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
 import logging
 from flask import Flask, request, render_template
 from flask_socketio import SocketIO, send, emit                                     
-# from gpiozero import PWMLED, Device
-# from gpiozero.pins.pigpio import PiGPIOFactory
+from gpiozero import LED, Device
+from gpiozero.pins.pigpio import PiGPIOFactory
 
 
 # Initialize Logging
@@ -16,7 +16,7 @@ logger.setLevel(logging.INFO) # Debugging for this file.
 
 
 # Initialize GPIO
-# Device.pin_factory = PiGPIOFactory() #set gpiozero to use pigpio by default.
+Device.pin_factory = PiGPIOFactory() #set gpiozero to use pigpio by default.
 
 
 # Flask & Flask Restful Global Variables.
@@ -43,15 +43,15 @@ def init_led1():
     """Create and initialise PWMLED Object"""
     global led1
     led1 = state1['level'] / 100
-    # led =  PWMLED(LED_GPIO_PIN)
-    # led.value = state['level'] / 100
+    led1 =  LED(20)
+    led1.value = state1['level'] / 100
 
 def init_led2():
     """Create and initialise PWMLED Object"""
     global led2
     led2 = state2['level'] / 100
-    # led =  PWMLED(LED_GPIO_PIN)
-    # led.value = state['level'] / 100
+    led2 =  LED(21)
+    led2.value = state2['level'] / 100
 
 
 """
@@ -88,16 +88,11 @@ def handle_state(data):
 
     if 'level' in data and data['level'].isdigit():                                  
         new_level = int(data['level']) # data comes in as str.
+        if new_level == 0:
+            led1.off()
+        else:
+            led1.on()
 
-        # Range validation and bounding.
-        if new_level < 0:                                                            
-            new_level = 0
-        elif new_level > 100:
-            new_level = 100
-
-        # Set PWM duty cycle to adjust brightness level.
-        # We are mapping input value 0-100 to 0-1
-        # led.value = new_level / 100                                                  
         logger.info("LED1 brightness level is " + str(new_level))
 
         state1['level'] = new_level
@@ -113,16 +108,11 @@ def handle_state(data):
 
     if 'level' in data and data['level'].isdigit():                                  
         new_level = int(data['level']) # data comes in as str.
+        if new_level == 0:
+            led2.off()
+        else:
+            led2.on()
 
-        # Range validation and bounding.
-        if new_level < 0:                                                           
-            new_level = 0
-        elif new_level > 100:
-            new_level = 100
-
-        # Set PWM duty cycle to adjust brightness level.
-        # We are mapping input value 0-100 to 0-1
-        # led.value = new_level / 100                                                  
         logger.info("LED2 brightness level is " + str(new_level))
 
         state2['level'] = new_level
