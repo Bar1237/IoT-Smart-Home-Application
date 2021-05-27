@@ -1,3 +1,10 @@
 .fas {
-    color: rgb(112, 112, 196);
+    /* color: rgb(112, 112, 196); */
+    color: black;
+}
+
+.card-deck {
+    margin-left: 200px;
+    margin-right: 200px;
+    margin-bottom: 20px;
 }
