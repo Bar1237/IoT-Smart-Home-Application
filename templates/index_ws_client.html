@@ -12,9 +12,22 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" 
     integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-    <link rel="stylesheet" href="generalStyle.css">
+    
+    <style>
+    .fas {
+      /* color: rgb(112, 112, 196); */
+      color: black;
+    }
+    .card-deck {
+      margin-left: 10px;
+      margin-right: 10px;
+      margin-bottom: 20px;
+    }
+    </style>
+
     <script src="/static/jquery.min.js"></script>
-    <script src="/static/socket.io.js"></script>                            
+    <script src="/static/socket.io.js"></script>   
+                             
     <script type="text/javascript">
 
         var socket = io();
@@ -33,7 +46,7 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
         socket.on('led1', function(dataFromServer) {                         
             console.log(dataFromServer)
             if (dataFromServer.level !== undefined) {
-                $("button.buttonOne").val(dataFromServer.level);
+                $("#buttonOne").val(dataFromServer.level);
                 // $("#checkboxOne").html(dataFromServer.level);
             }
         });
@@ -42,7 +55,7 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
         socket.on('led2', function(dataFromServer) {                         
             console.log(dataFromServer)
             if (dataFromServer.level !== undefined) {
-                $("button.buttonTwo").val(dataFromServer.level);
+                $("#buttonTwo").val(dataFromServer.level);
                 // $("#checkboxTwo").html(dataFromServer.level);
             }
         });
@@ -52,7 +65,7 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
             //temp value is used for tracking if the button is clicked. 
             temp1=1;                                    
             // Event listener for value changes.
-            $("button.buttonOne").on('click', function(){
+            $("#buttonOne").on('click', function(){
                 if(temp1%2==1){
                     level = "1";
                     payload = {"level": level};
@@ -72,7 +85,7 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
             //temp value is used for tracking if the button is clicked.   
             temp2=1;                                    
             // Event listener for value changes.
-            $("button.buttonTwo").on('click', function(){
+            $("#buttonTwo").on('click', function(){
                 if(temp2%2==1){
                     level = "1";
                     payload = {"level": level};
@@ -166,7 +179,7 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
             <i class="fas fa-toilet-paper fa-4x"></i>  
             <p class="card-text">Restroom</p>
             <button type="button" name="buttonOne" value="0" id="buttonOne" class="btn btn-secondary">Button 1</button>
-            <button type="button" name="buttonOne" value="0" id="buttonOne" class="btn btn-secondary">Button 2</button>
+            <button type="button" name="buttonOne" value="0" id="buttonTwo" class="btn btn-secondary">Button 2</button>
           </div>
         </div>
     </div>
