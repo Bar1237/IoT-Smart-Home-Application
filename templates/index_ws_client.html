@@ -3,7 +3,15 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Smart Home System Demo</title>
+    <title>Smart Home System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" 
+    integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <script src="/static/jquery.min.js"></script>
     <script src="/static/socket.io.js"></script>                            
     <script type="text/javascript">
@@ -80,14 +88,77 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
     </script>
 </head>
 <body>
-    <h1>Smart Home System Demo</h1>
-    LED is connected to GPIO {{pin}}<br>
-    Connected to server: <span id="connected">No</span>                    
-    <br><br>
-    <label for="checkboxOne">Button 1</label>
+    <div class="jumbotron text-center">
+        <h1>Smart Home System</h1>
+    </div>
+    <!-- LED is connected to GPIO {{pin}}<br>
+    Connected to server: <span id="connected">No</span>                     -->
+    <br>
+    <div class="card-deck">
+        <div class="card">
+          <div class="card-body text-center">
+            <i class="fas fa-temperature-high fa-4x" style="color:black"></i>
+            <p class="card-text">Temperature</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body text-center">
+            <i class="fas fa-door-closed fa-4x" style="color:black"></i>
+              <p class="card-text">Door</p>
+          </div>
+        </div>
+    </div>  
+    <br>
+    <div class="card-deck">
+        <div class="card">
+          <div class="card-body text-center">
+            <i class="fas fa-couch fa-4x" style="color:black"></i>
+            <p class="card-text">Living Room</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body text-center">
+            <i class="fas fa-utensils fa-4x" style="color:black"></i>  
+            <p class="card-text">Kitchen</p>
+          </div>
+        </div>
+    </div>
+    <br>
+    <div class="card-deck">
+        <div class="card">
+          <div class="card-body text-center">
+            <i class="fas fa-bed fa-4x" style="color:black"></i>
+            <p class="card-text">Master Bedroom</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body text-center">
+            <i class="fas fa-child fa-4x" style="color:black"></i> 
+            <p class="card-text">Kids Room</p>
+          </div>
+        </div>
+    </div>
+    <br>
+    <div class="card-deck">
+        <div class="card">
+          <div class="card-body text-center">
+            <i class="fas fa-bath fa-4x" style="color:black"></i>
+            <p class="card-text">Bathroom</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body text-center">
+            <i class="fas fa-toilet-paper fa-4x" style="color:black"></i>  
+            <p class="card-text">Restroom</p>
+          </div>
+        </div>
+    </div>
+      
+      
+    <!-- <label for="checkboxOne">Device 1</label>
     <input type="checkbox" name="checkboxOne" value="0" class="checkboxOne" id="checkboxOne">
     <br>
-    <label for="checkboxTwo">Button 2</label>
-    <input type="checkbox" name="checkboxTwo" value="0" class="checkboxTwo" id="checkboxTwo">
+    <label for="checkboxTwo">Device 2</label>
+    <input type="checkbox" name="checkboxTwo" value="0" class="checkboxTwo" id="checkboxTwo"> -->
 </body>
 </html>
