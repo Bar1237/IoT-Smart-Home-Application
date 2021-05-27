@@ -33,7 +33,7 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
         socket.on('led1', function(dataFromServer) {                         
             console.log(dataFromServer)
             if (dataFromServer.level !== undefined) {
-                $("input[type=checkbox].checkboxOne").val(dataFromServer.level);
+                $("button.buttonOne").val(dataFromServer.level);
                 // $("#checkboxOne").html(dataFromServer.level);
             }
         });
@@ -42,17 +42,17 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
         socket.on('led2', function(dataFromServer) {                         
             console.log(dataFromServer)
             if (dataFromServer.level !== undefined) {
-                $("input[type=checkbox].checkboxTwo").val(dataFromServer.level);
+                $("button.buttonTwo").val(dataFromServer.level);
                 // $("#checkboxTwo").html(dataFromServer.level);
             }
         });
 
         //Sends value to the server for led1.
         $(document).ready(function() {  
-            //temp value is used for tracking if the checkbox is checked or not. 
+            //temp value is used for tracking if the button is clicked. 
             temp1=1;                                    
             // Event listener for value changes.
-            $("input[type=checkbox].checkboxOne").on('click', function(){
+            $("button.buttonOne").on('click', function(){
                 if(temp1%2==1){
                     level = "1";
                     payload = {"level": level};
@@ -69,10 +69,10 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
 
         //Sends value to the server for led2.
         $(document).ready(function() { 
-            //temp value is used for tracking if the checkbox is checked or not.   
+            //temp value is used for tracking if the button is clicked.   
             temp2=1;                                    
             // Event listener for value changes.
-            $("input[type=checkbox].checkboxTwo").on('click', function(){
+            $("button.buttonTwo").on('click', function(){
                 if(temp2%2==1){
                     level = "1";
                     payload = {"level": level};
@@ -165,8 +165,8 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
           <div class="card-body text-center">
             <i class="fas fa-toilet-paper fa-4x"></i>  
             <p class="card-text">Restroom</p>
-            <button type="button" class="btn btn-secondary">Button 1</button>
-            <button type="button" class="btn btn-secondary">Button 2</button>
+            <button type="button" name="buttonOne" value="0" id="buttonOne" class="btn btn-secondary">Button 1</button>
+            <button type="button" name="buttonOne" value="0" id="buttonOne" class="btn btn-secondary">Button 2</button>
           </div>
         </div>
     </div>
