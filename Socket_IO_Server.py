@@ -1,7 +1,8 @@
 
 import logging
 from flask import Flask, request, render_template
-from flask_socketio import SocketIO, send, emit                                     
+from flask_socketio import SocketIO, send, emit    
+import gpiozero                                 
 from gpiozero import LED, Device
 from gpiozero.pins.pigpio import PiGPIOFactory
 
