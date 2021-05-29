@@ -1,4 +1,3 @@
-
 import logging
 import time
 from flask import Flask, request, render_template
@@ -7,13 +6,17 @@ import gpiozero
 from gpiozero import  Device
 from gpiozero.pins.pigpio import PiGPIOFactory
 import dht11
-
+import RPi.GPIO as GPIO
 
 # Initialize Logging
 logging.basicConfig(level=logging.WARNING)  # Global logging configuration
 logger = logging.getLogger('main') 
 logger.setLevel(logging.INFO) 
 
+# initialize GPIO
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+GPIO.cleanup()
 
 # Initialize GPIO
 Device.pin_factory = PiGPIOFactory() #set gpiozero to use pigpio by default.
