@@ -1,58 +1,21 @@
-"""
-Template that is used as a base to this code is taken from:
-https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/master/chapter03
-"""
 import logging
+import time
 from flask import Flask, request, render_template
-from flask_socketio import SocketIO, send, emit                                     
-from gpiozero import LED, Device
-from gpiozero.pins.pigpio import PiGPIOFactory
-
+from flask_socketio import SocketIO, send, emit    
 
 # Initialize Logging
 logging.basicConfig(level=logging.WARNING)  # Global logging configuration
-logger = logging.getLogger('main')  # Logger for this module
-logger.setLevel(logging.INFO) # Debugging for this file.
+logger = logging.getLogger('main') 
+logger.setLevel(logging.INFO) 
 
+# Devices
+relay1 = 0
+relay2 = 0
+dht11 = 0
 
-# Initialize GPIO
-Device.pin_factory = PiGPIOFactory() #set gpiozero to use pigpio by default.
-
-
-# Flask & Flask Restful Global Variables.
-app = Flask(__name__) # Core Flask app.
-socketio = SocketIO(app) # Flask-SocketIO extension wrapper.                         
-
-
-# Global variables
-LED_GPIO_PIN = 21
-led1 = None
-led2 = None
-state1 = {
-    'level': 50 
-}
-state2 = {
-    'level': 50 
-}
-
-
-"""
-GPIO Related Functions
-"""
-def init_led1():
-    """Create and initialise PWMLED Object"""
-    global led1
-    led1 = state1['level'] / 100
-    led1 =  LED(20)
-    led1.value = state1['level'] / 100
-
-def init_led2():
-    """Create and initialise PWMLED Object"""
-    global led2
-    led2 = state2['level'] / 100
-    led2 =  LED(21)
-    led2.value = state2['level'] / 100
-
+# Flask 
+app = Flask(__name__) 
+socketio = SocketIO(app,cors_allowed_origins="*")                         
 
 """
 Flask & Flask-SocketIO Related Functions
@@ -61,69 +24,53 @@ Flask & Flask-SocketIO Related Functions
 # Here we are serving a simple web page.
 @app.route('/', methods=['GET'])
 def index():
-    """index_ws_client.html file needs to be in the templates folder
-    relative to this Python file."""
-    return render_template('index_ws_client.html', pin=LED_GPIO_PIN)                 
+    return render_template('index_ws_client.html')                 
 
 # Flask-SocketIO Callback Handlers
 @socketio.on('connect')                                                              
 def handle_connect():
     """Called when a remote web socket client connects to this server"""
-    logger.info("Client {} connected.".format(request.sid))                          
+    logger.info("Client {} connected.".format(request.sid)) 
+    emit("relay1", relay1)                                                            
+    emit("relay2", relay2)
 
-    # Send initialising data to newly connected client.
-    emit("led1", state1)                                                             
-    emit("led2", state2)
-
+# Send Feedback when a client disconnects
 @socketio.on('disconnect')                                                           
 def handle_disconnect():
     """Called with a client disconnects from this server"""
     logger.info("Client {} disconnected.".format(request.sid))
 
-@socketio.on('led1')                                                                  
+# LED1 Handler
+@socketio.on('relay1')                                                                  
 def handle_state(data):                                                              
-    """Handle 'led' messages to control the LED."""
-    global state
-    logger.info("Update LED1 from client {}: {} ".format(request.sid, data))
+    logger.info("Update to Relay 1 from client {}: {} ".format(request.sid, data))
 
-    if 'level' in data and data['level'].isdigit():                                  
-        new_level = int(data['level']) # data comes in as str.
-        if new_level == 0:
-            led1.off()
+    if 'state' in data and data['state'].isdigit():                                  
+        relay1_state = int(data['state']) # data comes in as a str.
+        if relay1_state == 0:
+            relay1 = 0
         else:
-            led1.on()
-
-        logger.info("LED1 brightness level is " + str(new_level))
-
-        state1['level'] = new_level
+            relay1 = 1
+        logger.info("Relay 1 is " + str(relay1.value))
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
-    emit("led1", state1, broadcast=True)                                               
+    emit("relay1", relay1, broadcast=True)                                               
 
-@socketio.on('led2')                                                                  
+# LED2 Handler
+@socketio.on('relay2')                                                                  
 def handle_state(data):                                                              
-    """Handle 'led' messages to control the LED."""
-    global state
-    logger.info("Update LED2 from client {}: {} ".format(request.sid, data))
+    logger.info("Update on Relay 2 from client {}: {} ".format(request.sid, data))
 
-    if 'level' in data and data['level'].isdigit():                                  
-        new_level = int(data['level']) # data comes in as str.
-        if new_level == 0:
-            led2.off()
+    if 'state' in data and data['state'].isdigit():                                  
+        relay2_state = int(data['state']) # data comes as a str.
+        if relay2_state == 0:
+            relay2 = 0
         else:
-            led2.on()
-
-        logger.info("LED2 brightness level is " + str(new_level))
-
-        state2['level'] = new_level
+            relay2 = 1
+        logger.info("Relay 2 is " + str(relay2.value))
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
-    emit("led2", state2, broadcast=True)                                               
-
-
-# Initialise Module
-init_led2()
-init_led1()
+    emit("relay2", relay2, broadcast=True)                                               
 
 
 if __name__ == '__main__':
