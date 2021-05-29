@@ -1,10 +1,12 @@
 
 import logging
+import time
 from flask import Flask, request, render_template
 from flask_socketio import SocketIO, send, emit    
 import gpiozero                                 
 from gpiozero import  Device
 from gpiozero.pins.pigpio import PiGPIOFactory
+import dht11
 
 
 # Initialize Logging
@@ -19,6 +21,7 @@ Device.pin_factory = PiGPIOFactory() #set gpiozero to use pigpio by default.
 # Initilize Relays
 relay1 = gpiozero.OutputDevice(20, active_high=True, initial_value=False)
 relay2 = gpiozero.OutputDevice(21, active_high=True, initial_value=False)
+dht_sensor = dht11.DHT11(pin = 26)
 
 # Flask 
 app = Flask(__name__) 
@@ -80,13 +83,8 @@ def handle_state(data):
     # Broadcast new state to *every* connected connected (so they remain in sync).
     emit("relay2", relay2.value, broadcast=True)                                               
 
-def value_to_int(self, value):
-    if value:
-        return 1
-    else:
-        return 0
-
 
 if __name__ == '__main__':
 
     socketio.run(app, host='0.0.0.0', debug=True)
+    logger.info("Temp " + dht_sensor.read().temperature)
