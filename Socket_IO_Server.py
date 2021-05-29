@@ -37,8 +37,9 @@ def index():
 @socketio.on('connect')                                                              
 def handle_connect():
     """Called when a remote web socket client connects to this server"""
-    logger.info("Client {} connected.".format(request.sid))                          
-    
+    logger.info("Client {} connected.".format(request.sid)) 
+    logger.info(relay1.value)                         
+    logger.info(relay2.value) 
     emit("relay1", value_to_int(relay1.value))                                                             
     emit("relay2", value_to_int(relay2.value))
 
@@ -51,10 +52,10 @@ def handle_disconnect():
 # LED1 Handler
 @socketio.on('relay1')                                                                  
 def handle_state(data):                                                              
-    logger.info("Update to Relay 2 from client {}: {} ".format(request.sid, data))
+    logger.info("Update to Relay 1 from client {}: {} ".format(request.sid, data))
 
     if 'state' in data and data['state'].isdigit():                                  
-        new_state = int(data['level']) # data comes in as a str.
+        new_state = int(data['state']) # data comes in as a str.
         if new_state == 0:
             relay1.off()
         else:
@@ -73,7 +74,7 @@ def handle_state(data):
     logger.info("Update on Relay 2 from client {}: {} ".format(request.sid, data))
 
     if 'relay_state' in data and data['relay_state'].isdigit():                                  
-        new_state = int(data['level']) # data comes as a str.
+        new_state = int(data['state']) # data comes as a str.
         if new_state == 0:
             relay2.off()
         else:
@@ -95,4 +96,4 @@ def value_to_int(self, value):
 
 if __name__ == '__main__':
 
-    socketio.run(app, host='0.0.0.0', debug=True)
+    socketio.run(app, host='0.0.0.0', debug=False)
