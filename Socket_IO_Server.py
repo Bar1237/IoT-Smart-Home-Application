@@ -69,7 +69,7 @@ def handle_state(data):
 def handle_state(data):                                                              
     logger.info("Update on Relay 2 from client {}: {} ".format(request.sid, data))
 
-    if 'relay_state' in data and data['relay_state'].isdigit():                                  
+    if 'state' in data and data['state'].isdigit():                                  
         relay2_state = int(data['state']) # data comes as a str.
         if relay2_state == 0:
             relay2.off()
