@@ -59,7 +59,6 @@ def handle_state(data):
             relay1.off()
         else:
             relay1.on()
-
         logger.info("Relay 1 is " + str(relay1.value))
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
@@ -76,7 +75,6 @@ def handle_state(data):
             relay2.off()
         else:
             relay2.on()
-
         logger.info("Relay 2 is " + str(relay2.value))
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
