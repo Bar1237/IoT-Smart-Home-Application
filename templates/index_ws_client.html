@@ -43,7 +43,7 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
         });
         
         //Takes value from server for led1.
-        socket.on('led1', function(dataFromServer) {                         
+        socket.on('relay1', function(dataFromServer) {                         
             console.log(dataFromServer)
             if (dataFromServer.level !== undefined) {
                 $("#buttonOne").val(dataFromServer.level);
@@ -52,7 +52,7 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
         });
 
         //Takes value from server for led2.
-        socket.on('led2', function(dataFromServer) {                         
+        socket.on('relay2', function(dataFromServer) {                         
             console.log(dataFromServer)
             if (dataFromServer.level !== undefined) {
                 $("#buttonTwo").val(dataFromServer.level);
@@ -68,13 +68,13 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
             $("#buttonOne").on('click', function(){
                 if(temp1%2==1){
                     level = "1";
-                    payload = {"level": level};
-                    socket.emit('led1', payload);
+                    payload = {"state": level};
+                    socket.emit('relay1', payload);
                     temp1=2;
                 }else{
                     level = "0";
-                    payload = {"level": level};
-                    socket.emit('led1', payload);
+                    payload = {"state": level};
+                    socket.emit('relay1', payload);
                     temp1=1;
                 }
             });
@@ -88,13 +88,13 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
             $("#buttonTwo").on('click', function(){
                 if(temp2%2==1){
                     level = "1";
-                    payload = {"level": level};
-                    socket.emit('led2', payload);
+                    payload = {"state": level};
+                    socket.emit('relay2', payload);
                     temp2=2;
                 }else{
                     level = "0";
-                    payload = {"level": level};
-                    socket.emit('led2', payload);
+                    payload = {"state": level};
+                    socket.emit('relay2', payload);
                     temp2=1;
                 }
             });
