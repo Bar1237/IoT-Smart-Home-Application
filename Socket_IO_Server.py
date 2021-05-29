@@ -3,7 +3,7 @@ import logging
 from flask import Flask, request, render_template
 from flask_socketio import SocketIO, send, emit    
 import gpiozero                                 
-from gpiozero import LED, Device
+from gpiozero import  Device
 from gpiozero.pins.pigpio import PiGPIOFactory
 
 
@@ -39,8 +39,8 @@ def handle_connect():
     """Called when a remote web socket client connects to this server"""
     logger.info("Client {} connected.".format(request.sid))                          
     
-    emit("led1", value_to_int(relay1.value))                                                             
-    emit("led2", value_to_int(relay2.value))
+    emit("relay1", value_to_int(relay1.value))                                                             
+    emit("relay2", value_to_int(relay2.value))
 
 # Send Feedback when a client disconnects
 @socketio.on('disconnect')                                                           
@@ -84,7 +84,7 @@ def handle_state(data):
         relay2_state = new_state
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
-    emit("led2", relay2_state, broadcast=True)                                               
+    emit("relay2", relay2_state, broadcast=True)                                               
 
 def value_to_int(self, value):
     if value:
