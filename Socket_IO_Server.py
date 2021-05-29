@@ -38,10 +38,9 @@ def index():
 def handle_connect():
     """Called when a remote web socket client connects to this server"""
     logger.info("Client {} connected.".format(request.sid)) 
-    logger.info(relay1.value)                         
-    logger.info(relay2.value) 
-    emit("relay1", value_to_int(relay1.value))                                                             
-    emit("relay2", value_to_int(relay2.value))
+
+    emit("relay1", relay1.value)                                                            
+    emit("relay2", relay2.value)
 
 # Send Feedback when a client disconnects
 @socketio.on('disconnect')                                                           
