@@ -45,18 +45,18 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
         //Takes value from server for led1.
         socket.on('relay1', function(dataFromServer) {                         
             console.log(dataFromServer)
-            if (dataFromServer.level !== undefined) {
-                $("#buttonOne").val(dataFromServer.level);
-                // $("#checkboxOne").html(dataFromServer.level);
+            if (dataFromServer.state !== undefined) {
+                $("#buttonOne").val(dataFromServer.state);
+                // $("#checkboxOne").html(dataFromServer.state);
             }
         });
 
         //Takes value from server for led2.
         socket.on('relay2', function(dataFromServer) {                         
             console.log(dataFromServer)
-            if (dataFromServer.level !== undefined) {
-                $("#buttonTwo").val(dataFromServer.level);
-                // $("#checkboxTwo").html(dataFromServer.level);
+            if (dataFromServer.state !== undefined) {
+                $("#buttonTwo").val(dataFromServer.state);
+                // $("#checkboxTwo").html(dataFromServer.state);
             }
         });
 
@@ -67,13 +67,13 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
             // Event listener for value changes.
             $("#buttonOne").on('click', function(){
                 if(temp1%2==1){
-                    level = "1";
-                    payload = {"state": level};
+                    state = "1";
+                    payload = {"state": state};
                     socket.emit('relay1', payload);
                     temp1=2;
                 }else{
-                    level = "0";
-                    payload = {"state": level};
+                    state = "0";
+                    payload = {"state": state};
                     socket.emit('relay1', payload);
                     temp1=1;
                 }
@@ -87,13 +87,13 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
             // Event listener for value changes.
             $("#buttonTwo").on('click', function(){
                 if(temp2%2==1){
-                    level = "1";
-                    payload = {"state": level};
+                    state = "1";
+                    payload = {"state": state};
                     socket.emit('relay2', payload);
                     temp2=2;
                 }else{
-                    level = "0";
-                    payload = {"state": level};
+                    state = "0";
+                    payload = {"state": state};
                     socket.emit('relay2', payload);
                     temp2=1;
                 }
@@ -129,8 +129,8 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
             <div class="card-body text-center">
               <i class="fas fa-couch fa-4x"></i>
               <p class="card-text">Living Room</p>
-              <button type="button" id="buttonOne" class="btn btn-secondary">Button 1</button>
-              <button type="button" id="buttonTwo" class="btn btn-secondary">Button 2</button>
+              <button type="button" id="buttonOne" class="btn btn-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">Button 1</button>
+              <button type="button" id="buttonTwo" class="btn btn-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">Button 2</button>
             </div>
           </div>
     </div>  
