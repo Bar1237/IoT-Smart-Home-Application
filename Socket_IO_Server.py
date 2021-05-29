@@ -60,10 +60,10 @@ def handle_state(data):
         else:
             relay1.on()
 
-        logger.info(relay1.value)
+        logger.info("Relay 1 is " + relay1.value)
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
-    emit("relay1", relay1_state, broadcast=True)                                               
+    emit("relay1", relay1.value, broadcast=True)                                               
 
 # LED2 Handler
 @socketio.on('relay2')                                                                  
@@ -77,10 +77,10 @@ def handle_state(data):
         else:
             relay2.on()
 
-        logger.info(relay2.value)
+        logger.info("Relay 2 is " + relay2.value)
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
-    emit("relay2", relay2_state, broadcast=True)                                               
+    emit("relay2", relay2.value, broadcast=True)                                               
 
 def value_to_int(self, value):
     if value:
