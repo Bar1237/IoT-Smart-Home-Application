@@ -54,15 +54,13 @@ def handle_state(data):
     logger.info("Update to Relay 1 from client {}: {} ".format(request.sid, data))
 
     if 'state' in data and data['state'].isdigit():                                  
-        new_state = int(data['state']) # data comes in as a str.
-        if new_state == 0:
+        relay1_state = int(data['state']) # data comes in as a str.
+        if relay1_state == 0:
             relay1.off()
         else:
             relay1.on()
 
-        logger.info("Relay 1 is " + relay1.value )
-
-        relay1_state = new_state
+        logger.info(relay1.value)
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
     emit("relay1", relay1_state, broadcast=True)                                               
@@ -73,15 +71,13 @@ def handle_state(data):
     logger.info("Update on Relay 2 from client {}: {} ".format(request.sid, data))
 
     if 'relay_state' in data and data['relay_state'].isdigit():                                  
-        new_state = int(data['state']) # data comes as a str.
-        if new_state == 0:
+        relay2_state = int(data['state']) # data comes as a str.
+        if relay2_state == 0:
             relay2.off()
         else:
             relay2.on()
 
-        logger.info("Relay 2 is " + relay2.value )
-
-        relay2_state = new_state
+        logger.info(relay2.value)
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
     emit("relay2", relay2_state, broadcast=True)                                               
@@ -95,4 +91,4 @@ def value_to_int(self, value):
 
 if __name__ == '__main__':
 
-    socketio.run(app, host='0.0.0.0', debug=False)
+    socketio.run(app, host='0.0.0.0', debug=True)
