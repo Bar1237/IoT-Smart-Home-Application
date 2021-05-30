@@ -27,7 +27,7 @@ while 1:
     def handle_state(data):
         logger.info("Update to Relay 1 from client {}: {} ".format(sio.sid, data))
 
-        if 'state' in data and data['state'].isdigit():
+        if 'state' in data :
             relay1_state = int(data['state'])  # data comes in as a str.
             if relay1_state == 0:
                 relay1.off()
@@ -40,7 +40,7 @@ while 1:
     def handle_state(data):
         logger.info("Update on Relay 2 from client {}: {} ".format(sio.sid, data))
 
-        if 'state' in data and data['state'].isdigit():
+        if 'state' in data:
             relay2_state = int(data['state'])  # data comes as a str.
             if relay2_state == 0:
                 relay2.off()
