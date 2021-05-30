@@ -67,12 +67,12 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
             // Event listener for value changes.
             $("#buttonOne").on('click', function(){
                 if(temp1%2==1){
-                    state = 1;
+                    state = "1";
                     payload = {"state": state};
                     socket.emit('relay1', payload);
                     temp1=2;
                 }else{
-                    state = 0;
+                    state = "0";
                     payload = {"state": state};
                     socket.emit('relay1', payload);
                     temp1=1;
@@ -87,12 +87,12 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
             // Event listener for value changes.
             $("#buttonTwo").on('click', function(){
                 if(temp2%2==1){
-                    state = 1;
+                    state = "1";
                     payload = {"state": state};
                     socket.emit('relay2', payload);
                     temp2=2;
                 }else{
-                    state = 0;
+                    state = "0";
                     payload = {"state": state};
                     socket.emit('relay2', payload);
                     temp2=1;
