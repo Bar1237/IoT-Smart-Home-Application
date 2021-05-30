@@ -58,4 +58,4 @@ while 1:
     if int(end - start) != 0 and int(end - start) % 2 == 0:
         start = end
         result = dht_sensor.read()
-        sio.emit('dht', {"state": result.temperature}, broadcast = True)
+        sio.emit('dht', {"state": result.temperature})

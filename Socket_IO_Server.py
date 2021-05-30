@@ -43,7 +43,7 @@ def handle_disconnect():
 def handle_state(data):
     logger.info("Update to Dht from client {}: {} ".format(request.sid, data))
 
-    if 'state' in data and data['state'].isdigit():
+    if 'state' in data:
         dht_temp = int(data['state']) # data comes in as a str.
         dht11 = dht_temp
         logger.info("Temperature  is " + str(dht11))
@@ -56,7 +56,7 @@ def handle_state(data):
 def handle_state(data):                                                              
     logger.info("Update to Relay 1 from client {}: {} ".format(request.sid, data))
 
-    if 'state' in data and data['state'].isdigit():                                  
+    if 'state' in data :                                  
         relay1_state = int(data['state']) # data comes in as a str.
         if relay1_state == 0:
             relay1 = 0
@@ -74,7 +74,7 @@ def handle_state(data):
 def handle_state(data):                                                              
     logger.info("Update on Relay 2 from client {}: {} ".format(request.sid, data))
 
-    if 'state' in data and data['state'].isdigit():                                  
+    if 'state' in data:                                  
         relay2_state = int(data['state']) # data comes as a str.
         if relay2_state == 0:
             relay2 = 0
