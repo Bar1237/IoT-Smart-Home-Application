@@ -25,7 +25,7 @@ start = timer()
 while 1:
     @sio.on('relay1')
     def handle_state(data):
-        print("Update to Relay 1 from client {}: {} ".format(sio.sid, data))
+        logger.info("Update to Relay 1 from client {}: {} ".format(sio.sid, data))
 
         relay1_state = int(data['state'])  # data comes in as a str.
         if relay1_state == 0:
@@ -33,11 +33,13 @@ while 1:
         else:
             relay1.on()
         logger.info("Relay 1 is " + str(relay1.value))
+        sio.emit("relay1", relay1.value)
+
 
 
     @sio.on('relay2')
     def handle_state(data):
-        print("Update on Relay 2 from client {}: {} ".format(sio.sid, data))
+        logger.info("Update on Relay 2 from client {}: {} ".format(sio.sid, data))
 
         relay2_state = int(data['state'])  # data comes as a str.
         if relay2_state == 0:
@@ -45,9 +47,11 @@ while 1:
         else:
             relay2.on()
         logger.info("Relay 2 is " + str(relay2.value))
+        sio.emit("relay2", relay2.value)
+
 
     end = timer()
-    if int(end - start) != 0 and int(end - start) % 2 == 0:
+    if int(end - start) != 0 and int(end - start) % 5 == 0:
         start = end
         result = dht_sensor.read()
         sio.emit('dht', {"state": result.temperature})
