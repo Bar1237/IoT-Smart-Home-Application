@@ -56,7 +56,7 @@ def handle_state(data):
 def handle_state(data):
     logger.info("Update to Relay 1 from client {}: {} ".format(request.sid, data))
 
-    if isinstance(data['state'], int):
+    if 'state' in data and data['state'].isdigit():
         relay1_state = int(data['state']) # data comes in as a str.
         if relay1_state == 0:
             relay1 = 0
@@ -65,7 +65,7 @@ def handle_state(data):
         logger.info("Relay 1 is " + str(relay1))
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
-    emit("relay1", {'state': relay1})
+    emit("relay1", {'state': str(relay1)})
 
 # LED2 Handler
 
@@ -74,7 +74,7 @@ def handle_state(data):
 def handle_state(data):
     logger.info("Update on Relay 2 from client {}: {} ".format(request.sid, data))
 
-    if isinstance(data['state'], int):
+    if 'state' in data and data['state'].isdigit():
         relay2_state = int(data['state']) # data comes as a str.
         if relay2_state == 0:
             relay2 = 0
@@ -83,7 +83,7 @@ def handle_state(data):
         logger.info("Relay 2 is " + str(relay2))
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
-    emit("relay2", {'state': relay2})
+    emit("relay2", {'state': str(relay2)})
 
 
 if __name__ == '__main__':
