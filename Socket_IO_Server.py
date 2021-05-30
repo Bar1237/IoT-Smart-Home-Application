@@ -80,7 +80,7 @@ def handle_state(data):
         relay2 = 0
     else:
         relay2 = 1
-    logger.info("Relay 2 is " + str(relay2))
+        logger.info("Relay 2 is " + str(relay2))
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
     emit("relay2", {'state': str(relay2)})
