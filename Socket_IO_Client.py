@@ -25,7 +25,7 @@ start = timer()
 while 1:
     @sio.on('relay1')
     def handle_state(data):
-        logger.info("Update to Relay 1 from client {}: {} ".format(sio.sid, data))
+        print("Update to Relay 1 from client {}: {} ".format(sio.sid, data))
 
         relay1_state = int(data['state'])  # data comes in as a str.
         if relay1_state == 0:
@@ -37,7 +37,7 @@ while 1:
 
     @sio.on('relay2')
     def handle_state(data):
-        logger.info("Update on Relay 2 from client {}: {} ".format(sio.sid, data))
+        print("Update on Relay 2 from client {}: {} ".format(sio.sid, data))
 
         relay2_state = int(data['state'])  # data comes as a str.
         if relay2_state == 0:
