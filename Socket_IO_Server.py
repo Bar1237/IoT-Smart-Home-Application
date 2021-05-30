@@ -17,12 +17,6 @@ dht11 = 0
 app = Flask(__name__) 
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-"""
-Flask & Flask-SocketIO Related Functions
-"""
-# @app.route apply to the raw Flask instance.
-# Here we are serving a simple web page.
-
 
 @app.route('/', methods=['GET'])
 def index():
@@ -38,15 +32,24 @@ def handle_connect():
     emit("relay1", relay1)                                                            
     emit("relay2", relay2)
 
-# Send Feedback when a client disconnects
-
 
 @socketio.on('disconnect')
 def handle_disconnect():
     """Called with a client disconnects from this server"""
     logger.info("Client {} disconnected.".format(request.sid))
 
-# LED1 Handler
+
+@socketio.on('dht')
+def handle_state(data):
+    logger.info("Update to Dht from client {}: {} ".format(request.sid, data))
+
+    if 'state' in data and data['state'].isdigit():
+        dht_temp = int(data['state']) # data comes in as a str.
+        dht11 = dht_temp
+        logger.info("Temperature  is " + str(dht11))
+
+    # Broadcast new state to *every* connected connected (so they remain in sync).
+    emit("dht", {'state': dht_temp}, broadcast=True)
 
 
 @socketio.on('relay1')
@@ -62,7 +65,7 @@ def handle_state(data):
         logger.info("Relay 1 is " + str(relay1))
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
-    emit("relay1", str(relay1), broadcast=True)                                               
+    emit("relay1", {'state': relay1}, broadcast=True)
 
 # LED2 Handler
 
@@ -80,7 +83,7 @@ def handle_state(data):
         logger.info("Relay 2 is " + str(relay2))
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
-    emit("relay2", str(relay2), broadcast=True)                                               
+    emit("relay2", {'state': relay2}, broadcast=True)
 
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
 import socketio
+from timeit import default_timer as timer
 import logging
 import gpiozero
 from gpiozero import Device
@@ -20,6 +21,7 @@ relay1 = gpiozero.OutputDevice(20, active_high=True, initial_value=False)
 relay2 = gpiozero.OutputDevice(21, active_high=True, initial_value=False)
 dht_sensor = dht11.DHT11(pin=26)
 
+start = timer()
 while 1:
     @sio.on('relay1')
     def handle_state(data):
@@ -51,3 +53,9 @@ while 1:
 
         # Broadcast new state to *every* connected connected (so they remain in sync).
         sio.emit("relay2", relay2.value)
+
+    end = timer()
+    if int(end - start) != 0 and int(end - start) % 2 == 0:
+        start = end
+        result = dht_sensor.read()
+        sio.emit('dht', {"state": result.temperature}, broadcast = True)
