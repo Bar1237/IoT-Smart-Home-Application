@@ -1,26 +1,26 @@
 import logging
 import time
 from flask import Flask, request, render_template
-from flask_socketio import SocketIO, send, emit    
+from flask_socketio import SocketIO, emit
 
 # Initialize Logging
 logging.basicConfig(level=logging.WARNING)  # Global logging configuration
-logger = logging.getLogger('main') 
-logger.setLevel(logging.INFO) 
+logger = logging.getLogger('main')
+logger.setLevel(logging.INFO)
 
 # Devices
 relay1 = 0
 relay2 = 0
 dht11 = 0
 
-# Flask 
-app = Flask(__name__) 
+# Flask
+app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('index_ws_client.html')                 
+    return render_template('index_ws_client.html')
 
 # Flask-SocketIO Callback Handlers
 
@@ -28,9 +28,9 @@ def index():
 @socketio.on('connect')
 def handle_connect():
     """Called when a remote web socket client connects to this server"""
-    logger.info("Client {} connected.".format(request.sid)) 
-    emit("relay1", relay1)                                                            
-    emit("relay2", relay2)
+    logger.info("Client {} connected.".format(request.sid))
+    emit("relay1", {'state': str(relay1)}, broadcast=True)
+    emit("relay1", {'state': str(relay2)}, broadcast=True)
 
 
 @socketio.on('disconnect')
@@ -43,13 +43,13 @@ def handle_disconnect():
 def handle_state(data):
     logger.info("Update to Dht from client {}: {} ".format(request.sid, data))
 
-    if isinstance(data['state'], float) or isinstance(data['state'], int):
+    if isinstance(data['state'], float) or isinstance(data['state'], int) :
         dht_temp = int(data['state']) # data comes in as a str.
         dht11 = dht_temp
         logger.info("Temperature  is " + str(dht11))
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
-    emit("dht", {'state': dht11})
+    emit("dht", {'state': dht11}, broadcast = True)
 
 
 @socketio.on('relay1')
@@ -65,7 +65,7 @@ def handle_state(data):
         logger.info("Relay 1 is " + str(relay1))
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
-    emit("relay1", {'state': str(relay1)})
+    emit("relay1", {'state': str(relay1)}, broadcast=True)
 
 # LED2 Handler
 
@@ -83,7 +83,7 @@ def handle_state(data):
         logger.info("Relay 2 is " + str(relay2))
 
     # Broadcast new state to *every* connected connected (so they remain in sync).
-    emit("relay2", {'state': str(relay2)})
+    emit("relay2", {'state': str(relay2)}, broadcast = True)
 
 
 if __name__ == '__main__':
