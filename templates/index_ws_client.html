@@ -103,6 +103,12 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
       $("#connected").html("No");
     });
 
+    //Takes value from server for dht.
+    socket.on('dht', function (dataFromServer) {
+      console.log(dataFromServer)
+      document.getElementById("dhtValue").innerHTML = "Current Temperature: " + dataFromServer;
+    });
+    
     //Takes value from server for relay1.
     socket.on('relay1', function (dataFromServer) {
       console.log(dataFromServer)
@@ -174,7 +180,7 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
         <i class="fas fa-temperature-high fa-4x"></i>
         <p class="card-text">Temperature</p>
         <hr>
-        <p>25 Celcius</p>
+        <p id="dhtValue"></p>
       </div>
     </div>
     <div class="card">
