@@ -2,191 +2,280 @@
 https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/master/chapter03 -->
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Smart Home System</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" 
+  <title>Smart Home System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
     integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-    
-    <style>
+
+  <style>
     .fas {
-      /* color: rgb(112, 112, 196); */
       color: black;
     }
+
     .card-deck {
       margin-left: 10px;
       margin-right: 10px;
       margin-bottom: 20px;
     }
-    </style>
 
-    <script src="/static/jquery.min.js"></script>
-    <script src="/static/socket.io.js"></script>   
-                             
-    <script type="text/javascript">
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
 
-        var socket = io();
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
 
-        socket.on('connect', function() {                                     
-            console.log("Connected to Server");
-            $("#connected").html("Yes");
-        });
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
 
-        socket.on('disconnect', function() {                                 
-            console.log("Disconnected from the Server");
-            $("#connected").html("No");
-        });
-        
-        //Takes value from server for led1.
-        socket.on('relay1', function(dataFromServer) {                         
-            console.log(dataFromServer)
-            if (dataFromServer.state !== undefined) {
-                $("#buttonOne").val(dataFromServer.state);
-                // $("#checkboxOne").html(dataFromServer.state);
-            }
-        });
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
 
-        //Takes value from server for led2.
-        socket.on('relay2', function(dataFromServer) {                         
-            console.log(dataFromServer)
-            if (dataFromServer.state !== undefined) {
-                $("#buttonTwo").val(dataFromServer.state);
-                // $("#checkboxTwo").html(dataFromServer.state);
-            }
-        });
+    input:checked+.slider {
+      background-color: #2196F3;
+    }
 
-        //Sends value to the server for led1.
-        $(document).ready(function() {  
-            //temp value is used for tracking if the button is clicked. 
-            temp1=1;                                    
-            // Event listener for value changes.
-            $("#buttonOne").on('click', function(){
-                if(temp1%2==1){
-                    state = "1";
-                    payload = {"state": state};
-                    socket.emit('relay1', payload);
-                    temp1=2;
-                }else{
-                    state = "0";
-                    payload = {"state": state};
-                    socket.emit('relay1', payload);
-                    temp1=1;
-                }
-            });
-        });
+    input:focus+.slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
 
-        //Sends value to the server for led2.
-        $(document).ready(function() { 
-            //temp value is used for tracking if the button is clicked.   
-            temp2=1;                                    
-            // Event listener for value changes.
-            $("#buttonTwo").on('click', function(){
-                if(temp2%2==1){
-                    state = "1";
-                    payload = {"state": state};
-                    socket.emit('relay2', payload);
-                    temp2=2;
-                }else{
-                    state = "0";
-                    payload = {"state": state};
-                    socket.emit('relay2', payload);
-                    temp2=1;
-                }
-            });
-        });
-    </script>
+    input:checked+.slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 34px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+  </style>
+
+  <script src="/static/jquery.min.js"></script>
+  <script src="/static/socket.io.js"></script>
+
+  <script type="text/javascript">
+
+    var socket = io();
+
+    socket.on('connect', function () {
+      console.log("Connected to Server");
+      $("#connected").html("Yes");
+    });
+
+    socket.on('disconnect', function () {
+      console.log("Disconnected from the Server");
+      $("#connected").html("No");
+    });
+
+    //Takes value from server for relay1.
+    socket.on('relay1', function (dataFromServer) {
+      console.log(dataFromServer)
+      if (dataFromServer.state !== undefined) {
+        $("input[type=checkbox].one").val(dataFromServer.state);
+      }
+    });
+
+    //Takes value from server for relay2.
+    socket.on('relay2', function (dataFromServer) {
+      console.log(dataFromServer)
+      if (dataFromServer.state !== undefined) {
+        $("input[type=checkbox].two").val(dataFromServer.state);
+      }
+    });
+
+    //Sends value to the server for relay1.
+    $(document).ready(function () {
+      //temp value is used for tracking if the toggle is clicked. 
+      temp1 = 1;
+      // Event listener for value changes.
+      $("input[type=checkbox].one").on('click', function () {
+        if (temp1 % 2 == 1) {
+          state = "1";
+          payload = { "state": state };
+          socket.emit('relay1', payload);
+          temp1 = 2;
+        } else {
+          state = "0";
+          payload = { "state": state };
+          socket.emit('relay1', payload);
+          temp1 = 1;
+        }
+      });
+    });
+
+    //Sends value to the server for relay2.
+    $(document).ready(function () {
+      //temp value is used for tracking if the toggle is clicked.   
+      temp2 = 1;
+      // Event listener for value changes.
+      $("input[type=checkbox].two").on('click', function () {
+        if (temp2 % 2 == 1) {
+          state = "1";
+          payload = { "state": state };
+          socket.emit('relay2', payload);
+          temp2 = 2;
+        } else {
+          state = "0";
+          payload = { "state": state };
+          socket.emit('relay2', payload);
+          temp2 = 1;
+        }
+      });
+    });
+  </script>
 </head>
+
 <body>
-    <div class="jumbotron text-center">
-        <h1>Smart Home System</h1>
-    </div>
-    <!-- LED is connected to GPIO {{pin}}<br>
+  <div class="jumbotron text-center">
+    <h1>Smart Home System</h1>
+  </div>
+  <!-- LED is connected to GPIO {{pin}}<br>
     Connected to server: <span id="connected">No</span> -->
-    <br>
-    <div class="card-deck">
-        <div class="card">
-          <div class="card-body text-center">
-            <i class="fas fa-temperature-high fa-4x"></i>
-            <p></p>
-            <p>Current Temperature</p>
-            <p>25 Celcius</p>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-body text-center">
-            <i class="fas fa-door-closed fa-4x"></i>
-              <p></p>
-              <p>Door Status: Locked</p>
-              <button type="button" class="btn btn-secondary">Lock/Unlock</button>
-          </div>
-        </div>
-        <div class="card">
-            <div class="card-body text-center">
-              <i class="fas fa-couch fa-4x"></i>
-              <p class="card-text">Living Room</p>
-              <button type="button" id="buttonOne" class="btn btn-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">Button 1</button>
-              <button type="button" id="buttonTwo" class="btn btn-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">Button 2</button>
-            </div>
-          </div>
-    </div>  
-    <br>
-    <div class="card-deck">
-        <div class="card">
-            <div class="card-body text-center">
-              <i class="fas fa-utensils fa-4x"></i>  
-              <p class="card-text">Kitchen</p>
-              <button type="button" class="btn btn-secondary">Button 1</button>
-              <button type="button" class="btn btn-secondary">Button 2</button>
-            </div>
-        </div>
-        <div class="card">
-          <div class="card-body text-center">
-            <i class="fas fa-bed fa-4x"></i>
-            <p class="card-text">Master Bedroom</p>
-            <button type="button" class="btn btn-secondary">Button 1</button>
-            <button type="button" class="btn btn-secondary">Button 2</button>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-body text-center">
-            <i class="fas fa-child fa-4x"></i> 
-            <p class="card-text">Kids Room</p>
-            <button type="button" class="btn btn-secondary">Button 1</button>
-            <button type="button" class="btn btn-secondary">Button 2</button>
-          </div>
-        </div>
+  <br>
+  <div class="card-deck">
+    <div class="card">
+      <div class="card-body text-center">
+        <i class="fas fa-temperature-high fa-4x"></i>
+        <p class="card-text">Temperature</p>
+        <hr>
+        <p>25 Celcius</p>
+      </div>
     </div>
-    <br>
-    <div class="card-deck">
-        <div class="card">
-          <div class="card-body text-center">
-            <i class="fas fa-bath fa-4x"></i>
-            <p class="card-text">Bathroom</p>
-            <button type="button" class="btn btn-secondary">Button 1</button>
-            <button type="button" class="btn btn-secondary">Button 2</button>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-body text-center">
-            <i class="fas fa-toilet-paper fa-4x"></i>  
-            <p class="card-text">Restroom</p>
-            <button type="button" class="btn btn-secondary">Button 1</button>
-            <button type="button" class="btn btn-secondary">Button 2</button>
-          </div>
-        </div>
-        <div class="card">
-            <div class="card-body text-center">
-              <i class="fas fa-car fa-4x"></i>
-              <p class="card-text">Garage</p>
-              <button type="button" class="btn btn-secondary">Button 1</button>
-              <button type="button" class="btn btn-secondary">Button 2</button>
-            </div>
-        </div>
+    <div class="card">
+      <div class="card-body text-center">
+        <i class="fas fa-door-closed fa-4x"></i>
+        <p class="card-text">Exterior Door</p>
+        <hr>
+        <p>Door Status: Locked</p>
+        <label class="switch"> <input type="checkbox"> <span class="slider round"></span> </label>
+      </div>
     </div>
+    <div class="card">
+      <div class="card-body text-center">
+        <i class="fas fa-couch fa-4x"></i>
+        <p class="card-text">Living Room</p>
+        <hr>
+        <p>Lights</p> 
+        <label class="switch"> <input type="checkbox" class="one"> <span class="slider round"></span> </label>
+        <br>
+        <p>TV</p> 
+        <label class="switch"> <input type="checkbox" class="two"> <span class="slider round"></span> </label>
+      </div>
+    </div>
+  </div>
+  <br>
+  <div class="card-deck">
+    <div class="card">
+      <div class="card-body text-center">
+        <i class="fas fa-utensils fa-4x"></i>
+        <p class="card-text">Kitchen</p>
+        <hr>
+        <p>Lights</p> 
+        <label class="switch"> <input type="checkbox"> <span class="slider round"></span> </label>
+        <br>
+        <p>Device One</p> 
+        <label class="switch"> <input type="checkbox"> <span class="slider round"></span> </label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body text-center">
+        <i class="fas fa-bed fa-4x"></i>
+        <p class="card-text">Master Bedroom</p>
+        <hr>
+        <p>Lights</p> 
+        <label class="switch"> <input type="checkbox"> <span class="slider round"></span> </label>
+        <br>
+        <p>Curtains</p> 
+        <label class="switch"> <input type="checkbox"> <span class="slider round"></span> </label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body text-center">
+        <i class="fas fa-child fa-4x"></i>
+        <p class="card-text">Kids Room</p>
+        <hr>
+        <p>Lights</p> 
+        <label class="switch"> <input type="checkbox"> <span class="slider round"></span> </label>
+        <br>
+        <p>Curtains</p> 
+        <label class="switch"> <input type="checkbox"> <span class="slider round"></span> </label>
+      </div>
+    </div>
+  </div>
+  <br>
+  <div class="card-deck">
+    <div class="card">
+      <div class="card-body text-center">
+        <i class="fas fa-bath fa-4x"></i>
+        <p class="card-text">Bathroom</p>
+        <hr>
+        <p>Lights</p> 
+        <label class="switch"> <input type="checkbox"> <span class="slider round"></span> </label>
+        <br>
+        <p>Mirror Light</p> 
+        <label class="switch"> <input type="checkbox"> <span class="slider round"></span> </label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body text-center">
+        <i class="fas fa-toilet-paper fa-4x"></i>
+        <p class="card-text">Restroom</p>
+        <hr>
+        <p>Lights</p> 
+        <label class="switch"> <input type="checkbox"> <span class="slider round"></span> </label>
+        <br>
+        <p>Mirror Light</p> 
+        <label class="switch"> <input type="checkbox"> <span class="slider round"></span> </label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body text-center">
+        <i class="fas fa-car fa-4x"></i>
+        <p class="card-text">Garage</p>
+        <hr>
+        <p>Lights</p> 
+        <label class="switch"> <input type="checkbox"> <span class="slider round"></span> </label>
+        <br>
+        <p>Garage Doors</p> 
+        <label class="switch"> <input type="checkbox"> <span class="slider round"></span> </label>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
