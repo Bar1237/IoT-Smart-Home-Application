@@ -115,6 +115,11 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
       if (dataFromServer.state !== undefined) {
         $("input[type=checkbox].one").val(dataFromServer.state);
       }
+      if(parseInt(dataFromServer.state)==1){
+        document.getElementById("switchOne").checked = true;
+      }else{
+        document.getElementById("switchOne").checked = false;
+      }
     });
 
     //Takes value from server for relay2.
@@ -123,44 +128,41 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
       if (dataFromServer.state !== undefined) {
         $("input[type=checkbox].two").val(dataFromServer.state);
       }
+      if(parseInt(dataFromServer.state)==1){
+        document.getElementById("switchTwo").checked = true;
+      }else{
+        document.getElementById("switchTwo").checked = false;
+      }
     });
 
     //Sends value to the server for relay1.
     $(document).ready(function () {
-      //temp value is used for tracking if the toggle is clicked. 
-      temp1 = 1;
       // Event listener for value changes.
       $("input[type=checkbox].one").on('click', function () {
-        if (temp1 % 2 == 1) {
+        if (document.getElementById("switchOne").checked == true) {
           state = "1";
           payload = { "state": state };
           socket.emit('relay1', payload);
-          temp1 = 2;
         } else {
           state = "0";
           payload = { "state": state };
           socket.emit('relay1', payload);
-          temp1 = 1;
         }
       });
     });
 
     //Sends value to the server for relay2.
     $(document).ready(function () {
-      //temp value is used for tracking if the toggle is clicked.   
-      temp2 = 1;
       // Event listener for value changes.
       $("input[type=checkbox].two").on('click', function () {
-        if (temp2 % 2 == 1) {
+        if (document.getElementById("switchTwo").checked == true) {
           state = "1";
           payload = { "state": state };
           socket.emit('relay2', payload);
-          temp2 = 2;
         } else {
           state = "0";
           payload = { "state": state };
           socket.emit('relay2', payload);
-          temp2 = 1;
         }
       });
     });
@@ -180,7 +182,7 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
         <i class="fas fa-temperature-high fa-4x"></i>
         <p class="card-text">Temperature</p>
         <hr>
-        <p id="dhtValue"></p>
+        <p id="dhtValue" style="font-size: xx-large;"></p>
       </div>
     </div>
     <div class="card">
@@ -198,10 +200,10 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
         <p class="card-text">Living Room</p>
         <hr>
         <p>Lights</p> 
-        <label class="switch"> <input type="checkbox" class="one"> <span class="slider round"></span> </label>
+        <label class="switch"> <input type="checkbox" class="one" id="switchOne"> <span class="slider round"></span> </label>
         <br>
         <p>TV</p> 
-        <label class="switch"> <input type="checkbox" class="two"> <span class="slider round"></span> </label>
+        <label class="switch"> <input type="checkbox" class="two" id="switchTwo"> <span class="slider round"></span> </label>
       </div>
     </div>
   </div>
