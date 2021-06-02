@@ -30,9 +30,9 @@ while 1:
         if 'state' in data and data['state'].isdigit():
             relay1_state = int(data['state'])  # data comes in as a str.
             if relay1_state == 0:
-                relay1.off()
-            else:
                 relay1.on()
+            else:
+                relay1.off()
             logger.info("Relay 1 is " + str(relay1.value))
 
 
@@ -43,9 +43,9 @@ while 1:
         if 'state' in data and data['state'].isdigit():
             relay2_state = int(data['state'])  # data comes as a str.
             if relay2_state == 0:
-                relay2.off()
-            else:
                 relay2.on()
+            else:
+                relay2.off()
             logger.info("Relay 2 is " + str(relay2.value))
 
 
