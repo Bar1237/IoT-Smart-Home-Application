@@ -106,7 +106,7 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
     //Takes value from server for dht.
     socket.on('dht', function (dataFromServer) {
       console.log(dataFromServer)
-      document.getElementById("dhtValue").innerHTML = "Current Temperature: " + dataFromServer;
+      document.getElementById("dhtValue").innerHTML = "Current Temperature: " + dataFromServer.state + "°C";
     });
     
     //Takes value from server for relay1.
@@ -173,8 +173,6 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
   <div class="jumbotron text-center">
     <h1>Smart Home System</h1>
   </div>
-  <!-- LED is connected to GPIO {{pin}}<br>
-    Connected to server: <span id="connected">No</span> -->
   <br>
   <div class="card-deck">
     <div class="card">
