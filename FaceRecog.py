@@ -39,8 +39,7 @@ print('Encoding Complete')
 cap = cv2.VideoCapture(0)
 
 while True:
-    if((timer()- start)%10 == 0 ):
-        sio.emit('door', {"state" : "0"}, broadcast = True)
+    
     #Formatting captured image
     success, img = cap.read()
     imgS = cv2.resize(img, (0, 0), None, 0.25, 0.25)
@@ -65,7 +64,6 @@ while True:
             cv2.rectangle(img, (x1, y2 - 35), (x2, y2), (0, 255, 0), cv2.FILLED)
             cv2.putText(img, name, (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255, 255, 255), 1)
             sio.emit('door', {"state" : "1"}, broadcast = True)
-            start = timer()
 
     cv2.imshow('Webcam', img)
     cv2.waitKey(1)
