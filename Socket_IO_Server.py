@@ -12,6 +12,7 @@ logger.setLevel(logging.INFO)
 relay1 = 0
 relay2 = 0
 dht11 = 0
+door = 0
 
 # Flask
 app = Flask(__name__)
@@ -32,6 +33,7 @@ def handle_connect():
     emit("relay1", {'state': str(relay1)}, broadcast=True)
     emit("relay2", {'state': str(relay2)}, broadcast=True)
     emit("dht", {'state': dht11}, broadcast=True)
+    emit("door", {'state': str(door)}, broadcast=True)
 
 
 @socketio.on('disconnect')
@@ -51,6 +53,20 @@ def handle_state(data):
         # Broadcast new state to *every* connected connected (so they remain in sync).
         emit("dht", {'state': dht_temp}, broadcast=True)
 
+@socketio.on('door')
+def handle_state(data):
+    logger.info("Update to Door from client {}: {} ".format(request.sid, data))
+
+    if 'state' in data and data['state'].isdigit():
+        door_state = int(data['state']) # data comes in as a str.
+        if door_state == 0:
+            door = 0
+        else:
+            door = 1
+        logger.info("Door is " + str(relay1))
+
+    # Broadcast new state to *every* connected connected (so they remain in sync).
+    emit("door", {'state': str(door)}, broadcast=True)
 
 @socketio.on('relay1')
 def handle_state(data):

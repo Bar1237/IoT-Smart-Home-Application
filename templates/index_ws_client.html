@@ -109,6 +109,19 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
       document.getElementById("dhtValue").innerHTML = "Current Temperature: " + dataFromServer.state + "°C";
     });
     
+    //Takes value from server for Door 
+    socket.on('door', function (dataFromServer) {
+      console.log(dataFromServer)
+      if (dataFromServer.state !== undefined) {
+        $("input[type=checkbox].one").val(dataFromServer.state);
+      }
+      if(parseInt(dataFromServer.state)==1){
+        document.getElementById("doorSwitch").checked = true;
+      }else{
+        document.getElementById("doorSwitch").checked = false;
+      }
+    });
+  
     //Takes value from server for relay1.
     socket.on('relay1', function (dataFromServer) {
       console.log(dataFromServer)
@@ -133,6 +146,26 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
       }else{
         document.getElementById("switchTwo").checked = false;
       }
+    });
+
+
+    //--------------------------------------------------------------------------------------------------//
+    
+    
+    //Sends value to the server for door.
+    $(document).ready(function () {
+      // Event listener for value changes.
+      $("input[type=checkbox].doorClass").on('click', function () {
+        if (document.getElementById("doorSwitch").checked == true) {
+          state = "1";
+          payload = { "state": state };
+          socket.emit('door', payload);
+        } else {
+          state = "0";
+          payload = { "state": state };
+          socket.emit('door', payload);
+        }
+      });
     });
 
     //Sends value to the server for relay1.
@@ -189,7 +222,7 @@ https://github.com/PacktPublishing/Practical-Python-Programming-for-IoT/tree/mas
         <p class="card-text">Exterior Door</p>
         <hr>
         <p>Door Status: Locked</p>
-        <label class="switch"> <input type="checkbox"> <span class="slider round"></span> </label>
+        <label class="switch"> <input type="checkbox" class="doorClass" id="doorSwitch"> <span class="slider round"></span> </label>
       </div>
     </div>
     <div class="card">
