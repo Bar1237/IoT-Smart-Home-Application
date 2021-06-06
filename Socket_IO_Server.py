@@ -68,6 +68,7 @@ def handle_state(data):
     # Broadcast new state to *every* connected connected (so they remain in sync).
     emit("door", {'state': str(door)}, broadcast=True)
 
+# relay 1 handler
 @socketio.on('relay1')
 def handle_state(data):
     logger.info("Update to Relay 1 from client {}: {} ".format(request.sid, data))
@@ -83,9 +84,7 @@ def handle_state(data):
     # Broadcast new state to *every* connected connected (so they remain in sync).
     emit("relay1", {'state': str(relay1)}, broadcast=True)
 
-# LED2 Handler
-
-
+# relay 2 handler
 @socketio.on('relay2')
 def handle_state(data):
     logger.info("Update on Relay 2 from client {}: {} ".format(request.sid, data))
